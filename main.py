@@ -25,10 +25,16 @@ def initialize_board():
     # Print the resulting board
     return board
 
-def make_move(board ,slot ,player):
+def make_move(board ,slot ,player,):
     row = (slot - 1) // 3
     col = (slot - 1) % 3
-    board[row][col] = player
+    if board[row][col] == " ":
+        board[row][col] = player
+    else:
+        new_value = int(input("The number you chose is already taken. Please enter another number: "))
+        row = (new_value - 1) // 3
+        col = (new_value - 1) % 3
+        board[row][col] = player
 
 
 def main():
