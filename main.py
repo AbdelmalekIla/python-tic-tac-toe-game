@@ -3,11 +3,24 @@ def print_board(board):
         print(" | ".join(row))
         print("-" * 9)
 
+
 def is_board_full(board):
     for row in board:
         if " " in row:
             return False
     return True
+
+
+def check_win(board, player):
+    for row in board:
+        if all(cell == player for cell in row):
+            return True
+    for col in range(3):
+        if all(board[row][col] == player for row in range(3)):
+            return True
+    if all(board[i][i] == player for i in range(3)) or all(board[i][2 - i] == player for i in range(3)):
+        return True
+    return False
 
 
 def initialize_board():
@@ -36,15 +49,21 @@ def main():
     board = initialize_board()
     print_board(board)
 
+    player_1 = "X"
+    player_2 = "O"
+    current_player = player_1
+
     while not is_board_full(board):
-        slot_1 = int(input("Player 1, you have 'X'. Please enter a slot number from 1 to 9 to place your 'X': "))
-        make_move(board, slot_1, "X")
+        slot = int(input(f"Player {current_player}, please enter a slot number from 1 to 9: "))
+        make_move(board, slot, current_player)
         print_board(board)
 
-        if is_board_full(board) :
+        if check_win(board, current_player):
+            print(f"Player {current_player} wins!")
             break
-        slot_2 = int(input("Player 2, you have 'O'. Please enter a slot number from 1 to 9 to place your 'O': "))
-        make_move(board, slot_2, "O")
-        print_board(board)
+        current_player = player_2 if current_player == player_1 else player_1
+        if is_board_full(board) and not check_win(board, player_1) and not check_win(board, player_2):
+            print("It's a draw!")
 
-print(main())
+
+main()
