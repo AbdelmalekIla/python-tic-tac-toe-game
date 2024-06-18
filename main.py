@@ -1,3 +1,5 @@
+import random
+
 def print_board(board):
     """
     Function to print the current state of the tic-tac-toe board.
@@ -83,7 +85,7 @@ def make_move(board, slot, player):
     If the chosen slot is already taken, it prompts the player to enter another slot.
     """
     row = (slot - 1) // 3  # Calculate the row index based on the slot number
-    col = (slot - 1) % 3  # Calculate the column index based on the slot number
+    col = (slot - 1) % 3   # Calculate the column index based on the slot number
 
     if board[row][col] == " ":  # If the slot is empty
         board[row][col] = player  # Place the player's symbol on the board
@@ -95,9 +97,47 @@ def make_move(board, slot, player):
         board[row][col] = player  # Place the player's symbol on the new slot
 
 
+def make_ai_move(board, player):
+    """
+    Function to make a move for the AI player.
+
+    Args:
+    - board (list of lists): The 3x3 board represented as a list of lists.
+    - player (str): The AI player's symbol ('X' or 'O').
+
+    Makes a random move on the board.
+    """
+    while True:
+        slot = random.randint(1, 9)  # Choose a random slot (1 to 9)
+        row = (slot - 1) // 3
+        col = (slot - 1) % 3
+        if board[row][col] == " ":  # If the slot is empty
+            board[row][col] = player  # Place the AI player's symbol on the board
+            break
+
+
 def main():
     """
     Main function to run the tic-tac-toe game.
+    """
+    print("Welcome to Tic-Tac-Toe!")
+
+    while True:
+        choice = input("Enter '1' to play against a friend, or '2' to play against the AI: ")
+
+        if choice == '1':
+            play_with_friend()
+            break
+        elif choice == '2':
+            play_with_ai()
+            break
+        else:
+            print("Invalid choice. Please enter '1' or '2'.")
+
+
+def play_with_friend():
+    """
+    Function to play tic-tac-toe with a friend (two human players).
     """
     board = initialize_board()  # Initialize the board
     print_board(board)  # Print the initial empty board
@@ -119,6 +159,38 @@ def main():
         current_player = player_2 if current_player == player_1 else player_1
 
         if is_board_full(board) and not check_win(board, player_1) and not check_win(board, player_2):
+            print("It's a draw!")  # If board is full and no one wins, it's a draw
+
+
+def play_with_ai():
+    """
+    Function to play tic-tac-toe against the AI.
+    """
+    board = initialize_board()  # Initialize the board
+    print_board(board)  # Print the initial empty board
+
+    player_human = "X"  # Human player's symbol
+    player_ai = "O"  # AI player's symbol
+    current_player = player_human  # Start with the human player
+
+    while not is_board_full(board):  # Continue while the board is not full
+        if current_player == player_human:
+            slot = int(input(f"Player {current_player}, please enter a slot number from 1 to 9: "))
+            make_move(board, slot, current_player)  # Make the human player's move
+        else:
+            print("AI is making a move...")
+            make_ai_move(board, current_player)  # Make the AI player's move
+
+        print_board(board)  # Print the updated board after the move
+
+        if check_win(board, current_player):  # Check if the current player has won
+            print(f"Player {current_player} wins!")  # Print the win message
+            break  # Exit the loop if there's a winner
+
+        # Switch to the next player
+        current_player = player_ai if current_player == player_human else player_human
+
+        if is_board_full(board) and not check_win(board, player_human) and not check_win(board, player_ai):
             print("It's a draw!")  # If board is full and no one wins, it's a draw
 
 
